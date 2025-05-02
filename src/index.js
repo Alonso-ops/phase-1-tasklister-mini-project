@@ -24,4 +24,27 @@ function handleToDo(todo) {
   document.querySelector("#tasks").appendChild(li);
 }
 
+function handleToDo(todo) {
+
+  const li = document.createElement("li");
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+
+  const taskText = document.createTextNode(` ${todo} `);
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "🗑️";
+  deleteBtn.style.marginLeft = "10px";
+
+  deleteBtn.addEventListener("click", () => {
+    li.remove();
+  });
+
+  li.appendChild(checkbox);
+  li.appendChild(taskText);
+  li.appendChild(deleteBtn);
+
+  document.querySelector("#tasks").appendChild(li);
+}
 
