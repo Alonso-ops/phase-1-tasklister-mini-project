@@ -12,21 +12,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const user = document.getElementById("task-user").value;
     const due = document.getElementById("task-due").value;
 
-    // Create list item
+
     const li = document.createElement("li");
     li.setAttribute("data-priority", priority);
 
-    // Set color based on priority
     const colorMap = { high: "red", medium: "orange", low: "green" };
     li.style.color = colorMap[priority];
 
-    // Set content
     li.innerHTML = `
       <strong>${desc}</strong> 
       (Assigned to: ${user || "N/A"}, Due: ${due || "N/A"}, Priority: ${priority})
     `;
 
-    // Create edit button
     const editBtn = document.createElement("button");
     editBtn.textContent = "Edit";
     editBtn.style.marginLeft = "10px";
@@ -37,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Create delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.style.marginLeft = "5px";
@@ -50,7 +46,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.reset();
   });
 
-  // Sorting by priority
   sortBtn.addEventListener("click", () => {
     const tasks = Array.from(taskList.children);
     const rank = { high: 1, medium: 2, low: 3 };
