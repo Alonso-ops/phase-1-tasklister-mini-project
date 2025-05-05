@@ -56,3 +56,18 @@ document.addEventListener("DOMContentLoaded", () => {
     sortAsc = !sortAsc;
   });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("create-task-form");
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const taskInput = document.getElementById("new-task-description").value;
+
+    const li = document.createElement("li");
+    li.textContent = taskInput;
+
+    document.getElementById("tasks").appendChild(li);
+  });
+});
