@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("create-task-form");
+  const form = document.getElementById("create-task-description");
   const taskList = document.getElementById("tasks");
   let sortAsc = true;
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const desc = document.getElementById("new-task-form").value;
+    const desc = document.getElementById("new-task-description").value;
     const priority = document.getElementById("priority").value;
     const user = document.getElementById("task-user").value;
     const due = document.getElementById("task-due").value;
