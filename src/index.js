@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const desc = document.getElementById("new-task-description").value;
+    const desc = document.getElementById("new-task-form").value;
     const priority = document.getElementById("priority").value;
     const user = document.getElementById("task-user").value;
     const due = document.getElementById("task-due").value;
