@@ -1,57 +1,68 @@
-const chai = require('chai');
-global.expect = chai.expect;
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("create-task-form");
+  const taskList = document.getElementById("tasks");
+  const sortBtn = document.getElementById("sort-btn");
+  let sortAsc = true;
 
-const fs = require('fs');
-const path = require('path');
-const { JSDOM } = require('jsdom');
-const babel = require('@babel/core');
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-// Load HTML content
-const html = fs.readFileSync(path.resolve(__dirname, '..', 'index.html'), 'utf-8');
+    const desc = document.getElementById("new-task-description").value;
+    const priority = document.getElementById("priority").value;
+    const user = document.getElementById("task-user").value;
+    const due = document.getElementById("task-due").value;
 
-// Transform JavaScript using Babel
-const { code: transformedScript } = babel.transformFileSync(
-  path.resolve(__dirname, '..', 'src/index.js'),
-  { presets: ['@babel/preset-env'] }
-);
+    // Create list item
+    const li = document.createElement("li");
+    li.setAttribute("data-priority", priority);
 
-// Initialize JSDOM
-const dom = new JSDOM(html, {
-  runScripts: "dangerously",
-  resources: "usable"
+    // Set color based on priority
+    const colorMap = { high: "red", medium: "orange", low: "green" };
+    li.style.color = colorMap[priority];
+
+    // Set content
+    li.innerHTML = `
+      <strong>${desc}</strong> 
+      (Assigned to: ${user || "N/A"}, Due: ${due || "N/A"}, Priority: ${priority})
+    `;
+
+    // Create edit button
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "Edit";
+    editBtn.style.marginLeft = "10px";
+    editBtn.addEventListener("click", () => {
+      const newText = prompt("Edit task:", desc);
+      if (newText && newText.trim() !== "") {
+        li.querySelector("strong").textContent = newText;
+      }
+    });
+
+    // Create delete button
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.style.marginLeft = "5px";
+    deleteBtn.addEventListener("click", () => li.remove());
+
+    li.appendChild(editBtn);
+    li.appendChild(deleteBtn);
+
+    taskList.appendChild(li);
+    form.reset();
+  });
+
+  // Sorting by priority
+  sortBtn.addEventListener("click", () => {
+    const tasks = Array.from(taskList.children);
+    const rank = { high: 1, medium: 2, low: 3 };
+
+    tasks.sort((a, b) => {
+      const aVal = rank[a.getAttribute("data-priority")];
+      const bVal = rank[b.getAttribute("data-priority")];
+      return sortAsc ? aVal - bVal : bVal - aVal;
+    });
+
+    taskList.innerHTML = "";
+    tasks.forEach(task => taskList.appendChild(task));
+    sortAsc = !sortAsc;
+  });
 });
-
-// Inject the transformed JavaScript into the virtual DOM
-const scriptElement = dom.window.document.createElement("script");
-scriptElement.textContent = transformedScript;
-dom.window.document.body.appendChild(scriptElement);
-
-// Expose JSDOM globals to the testing environment
-global.window = dom.window;
-global.document = dom.window.document;
-global.navigator = dom.window.navigator;
-global.HTMLElement = dom.window.HTMLElement;
-global.Node = dom.window.Node;
-global.Text = dom.window.Text;
-global.XMLHttpRequest = dom.window.XMLHttpRequest;
-
-// Sample test suite for JavaScript event handling
-describe('Handling form submission', () => {
-  let form
-  let formInput
-  let taskList
-
-  before(() => {
-    form = document.querySelector('#create-task-form')
-    formInput = document.querySelector('#new-task-description')
-    taskList = document.querySelector('#tasks')
-  })
-
-  it('should add an event to the form and add input to webpage', () => {
-    // Simulate user input
-    formInput.value = 'Wash the dishes'
-    const event = new dom.window.Event('submit')
-    form.dispatchEvent(event)
-    expect(taskList.textContent).to.include('Wash the dishes')
-  })
-})
